@@ -123,6 +123,12 @@
     <Compile Include="busy_delay.s">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="ds18b20.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ds18b20.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>

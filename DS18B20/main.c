@@ -11,6 +11,7 @@
 #include <util/delay.h>
 #include "acx.h"
 #include "serial.h"
+#include "ds18b20.h"
 
 /*
  * A thread that blinks a green LED on output 11
@@ -49,6 +50,14 @@ void serial_test() {
 		c = serial_read();
 		serial_write(c);
 	}
+}
+
+/*
+ * Determine whether a sensor is connected.
+ */
+void sensor_test() {
+	unsigned char present = ow_reset();
+	while(1);
 }
 
 int main(void)
