@@ -88,6 +88,7 @@
   <avrgcc.compiler.symbols.DefSymbols>
     <ListValues>
       <Value>DEBUG</Value>
+      <Value>F_CPU=16000000</Value>
     </ListValues>
   </avrgcc.compiler.symbols.DefSymbols>
   <avrgcc.compiler.directories.IncludePaths>
@@ -110,10 +111,25 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="acx.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="acx.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="acx_asm.s">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="busy_delay.s">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="serial.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="serial.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
