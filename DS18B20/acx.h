@@ -2,8 +2,23 @@
  * acx.h
  * System configuration for a basic cooperative executive
  * Kernel.
+ * @designer Edwin Frank Barry
  * @author Christopher Waldon
  */
+
+/*
+ * Define some hard-ware specific constants
+ */
+#define led12 PB6
+#define led11 PB5
+
+/*
+ * Define some hardware manipulation macros
+ */
+#define output_low(port, pin) (port &= ~(1 << pin))
+#define output_hi(port, pin) (port |= (1 << pin))
+#define set_input(portdir, pin) (portdir &= ~(1 << pin))
+#define set_output(portdir, pin) (portdir |= (1 << pin))
 
 /*
  * Define system constants
@@ -80,11 +95,13 @@ typedef void		(*PTHREAD)(void);
 void x_init();
 void x_new(byte tid, PTHREAD pthread, byte isEnabled);
 void x_yield();
+void x_schedule();
 void x_delay(int ticks);
 void x_suspend(int tid);
 void x_resume(int tid);
 void x_disable(int tid);
 void x_enable(int tid);
+byte x_getID();
 long gtime();
 
 /*********************************************************|

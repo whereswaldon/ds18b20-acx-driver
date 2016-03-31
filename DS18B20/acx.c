@@ -2,6 +2,7 @@
  * acx.c
  * System configuration for a basic cooperative executive
  * Kernel.
+ * @designer Edwin Frank Barry
  * @author Christopher Waldon
  */
 
@@ -153,9 +154,7 @@ void x_init() {
  * interrupt handler.
  */
 void x_new(byte tid, PTHREAD pthread, byte isEnabled) {
-	if (tid == x_thread_id) {
-		//TODO: Reinitialize current thread
-	}
+
 	byte low = (byte) (((int) pthread) & 0xff);
 	byte mid = (byte) ((((int) pthread) & 0xff00) >> 8);
 	byte high = (byte) ((((int) pthread) & 0xff0000) >> 16);
@@ -167,6 +166,10 @@ void x_new(byte tid, PTHREAD pthread, byte isEnabled) {
 	stacks[tid].pHead -= 1;
 
 	//save register values
+	stacks[tid].pHead -= 1;
+	*(stacks[tid].pHead) = 28;
+	stacks[tid].pHead -= 1;
+	*(stacks[tid].pHead) = 29;
 	*(stacks[tid].pHead) = 2;
 	stacks[tid].pHead -= 1;
 	*(stacks[tid].pHead) = 3;
@@ -199,9 +202,7 @@ void x_new(byte tid, PTHREAD pthread, byte isEnabled) {
 	stacks[tid].pHead -= 1;
 	*(stacks[tid].pHead) = 17;
 	stacks[tid].pHead -= 1;
-	*(stacks[tid].pHead) = 28;
-	stacks[tid].pHead -= 1;
-	*(stacks[tid].pHead) = 29;
+
 
 	//create a bytemask to enable/disable a thread
 	byte mask = 1;
@@ -213,6 +214,10 @@ void x_new(byte tid, PTHREAD pthread, byte isEnabled) {
 	} else {
 		//disable the thread
 		disables |= mask;
+	}
+	if (tid == x_thread_id) {
+		//we've just overwritten the current thread, so reschedule
+		x_schedule();
 	}
 }
 
@@ -226,7 +231,7 @@ void x_new(byte tid, PTHREAD pthread, byte isEnabled) {
  */
 void x_delay(int ticks) {
 	//disable this thread
-	delays[x_thread_id] = 1;
+	delays |= x_thread_mask;
 	cli(); //disable interrupts
 	x_thread_delay[x_thread_id] = ticks;
 	sei(); //enable interrupts
@@ -239,7 +244,6 @@ void x_delay(int ticks) {
  * whose delay values reach zero.
  */
 ISR(TIMER0_COMPA_vect){
-	cli(); //disable interrupts
 	int i = 0;
 	for (; i < NUM_THREADS; i++) {
 		//if the count is nonzero
@@ -250,10 +254,10 @@ ISR(TIMER0_COMPA_vect){
 		//if the current thread isn't disabled
 		if (x_thread_delay[i] == 0) {
 			//enable this thread
-			disables &= ~(0x1 << i);
+			delays &= ~(0x1 << i);
 		}
 	}
-	sei(); //enable interrupts
+	ticks++;
 }
 
 /*
@@ -268,7 +272,7 @@ ISR(TIMER0_COMPA_vect){
  * multiple levels of suspend. 
  */
 void x_suspend(int tid) {
-
+	suspends |= (0x1 << tid);
 }
 
 /*
@@ -280,7 +284,7 @@ void x_suspend(int tid) {
  * with a counting semaphore to allow multiple levels of suspend. 
  */
 void x_resume(int tid) {
-
+	suspends &= ~(0x1 << tid);
 }
 
 /*
@@ -301,7 +305,7 @@ void x_resume(int tid) {
  * on the stack when first created.
  */
 void x_disable(int tid) {
-
+	disables |= (0x1 << tid);
 }
 
 /*
@@ -313,7 +317,7 @@ void x_disable(int tid) {
  * status bits that block the thread. 
  */
 void x_enable(int tid) {
-
+	disables &= ~(0x1 << tid);
 }
 
 /*
@@ -321,6 +325,13 @@ void x_enable(int tid) {
  * counter.
  */
 long gtime() {
-	return 0;
+	return ticks;
+}
+
+/*
+ * Returns the id of the calling thread
+ */
+byte x_getID() {
+	return x_thread_id;
 }
 
