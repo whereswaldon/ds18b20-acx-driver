@@ -44,7 +44,7 @@ void red() {
 }
 
 void serial_test() {
-	serial_open(192000, SERIAL_8N1);
+	serial_open(19200, SERIAL_8N1);
 	char c;
 	while(1) {
 		c = serial_read();
@@ -57,6 +57,15 @@ void serial_test() {
  */
 void sensor_test() {
 	unsigned char present = ow_reset();
+	serial_open(19200, SERIAL_8N1);
+	char go = serial_read();
+	while (go != 'g') go = serial_read();
+	if (present) {
+		serial_write('t');
+	} else {
+		serial_write('f');
+	}
+	
 	while(1);
 }
 

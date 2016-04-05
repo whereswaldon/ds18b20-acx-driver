@@ -15,17 +15,17 @@ unsigned char ow_reset(void)
 	unsigned char presence;
 
  //pull DQ line low
-	DDRB |= 1 << 2;
-	PORTB2 = 0;
+	DDRB |= (1 << 2);
+	PORTB |= (1 << 2);
 
  // leave it low for 480us
 	delay_usec(479);
 
  // allow line to return high
 	DDRB |= 1 << 2;
-	PORTB2 = 1;
+	PORTB |= (1 << 2);
 	DDRB &= ~(1 << 2);
-	PORTB2 = 0;
+	PORTB &= ~(1 << 2);
 
  // wait for presence
 	delay_usec(69);
