@@ -53,7 +53,7 @@ x_yield:
 		ldi	r30,	lo8(stacks)	;load the address of the array
 		ldi r31,	hi8(stacks)	;load the other byte
 		add	r30,	r22			;increment the address by index
-		adc r31,	0			;pull in the carry from previous, if any
+		;adc r31,	0			;pull in the carry from previous, if any
 		
 		;write the SP into the stack save area
 		lds	r16,	(0x5d)		;Load SP low byte

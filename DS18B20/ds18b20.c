@@ -14,7 +14,7 @@ unsigned char ow_reset(void)
 {
 	unsigned char presence;
 
- //pull DQ line low
+ // pull DQ line low
 	DDRB |= (1 << 2);
 	PORTB |= (1 << 2);
 
@@ -31,7 +31,7 @@ unsigned char ow_reset(void)
 	delay_usec(69);
 
  // get presence signal
-	presence = PINB2;
+	presence = PINB & (1 << 2);
 
 // wait for end of timeslot
 	delay_usec(229); 

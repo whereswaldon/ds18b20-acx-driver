@@ -47,6 +47,8 @@ void serial_test() {
 	serial_open(19200, SERIAL_8N1);
 	char c;
 	while(1) {
+		//serial_write('x');
+		//x_delay(1000);
 		c = serial_read();
 		serial_write(c);
 	}
@@ -58,14 +60,19 @@ void serial_test() {
 void sensor_test() {
 	unsigned char present = ow_reset();
 	serial_open(19200, SERIAL_8N1);
-	char go = serial_read();
-	while (go != 'g') go = serial_read();
-	if (present) {
-		serial_write('t');
-	} else {
-		serial_write('f');
-	}
 	
+	char go = serial_read();
+	while (1) {
+		if(go == 'g') {
+			present = ow_reset();
+			if (present) {
+				serial_write('t');
+				} else {
+				serial_write('f');
+			}
+		}
+		go = serial_read();
+	}
 	while(1);
 }
 
@@ -73,5 +80,5 @@ int main(void)
 {
 	x_init();
 	//x_new(1, red, 1);
-	x_new(0, serial_test, 1);
+	x_new(0, sensor_test, 1);
 }
