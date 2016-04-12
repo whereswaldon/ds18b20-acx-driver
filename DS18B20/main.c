@@ -61,19 +61,22 @@ void sensor_test() {
 	unsigned char present = ow_reset();
 	serial_open(19200, SERIAL_8N1);
 	
-	char go = serial_read();
-	while (1) {
-		if(go == 'g') {
-			present = ow_reset();
-			if (present) {
-				serial_write('t');
-				} else {
-				serial_write('f');
-			}
-		}
-		go = serial_read();
+	//char read;
+	present = ow_reset();
+	while (!present) {
+		x_delay(1000);
+		present = ow_reset();
 	}
-	while(1);
+	while(1) {
+		write_bit(0);
+		/*read = read_bit();
+		if (read == 1) {
+			serial_write('1');
+		} else {
+			serial_write('0');
+		}*/
+		x_delay(1000);
+	}
 }
 
 int main(void)

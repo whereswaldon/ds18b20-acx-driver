@@ -11,7 +11,8 @@
 
 void delay_usec(int);
 unsigned char ow_reset(void);
-
+unsigned char read_bit();
+void write_bit(char);
 
 
 #endif /* DS18B20_H_ */
