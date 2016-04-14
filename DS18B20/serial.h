@@ -41,4 +41,5 @@
 void serial_open(long speed, int config);
 char serial_read(void);
 void serial_write(char data);
+void serial_write_string(char* data, int length);
 #endif /* SERIAL_H_ */

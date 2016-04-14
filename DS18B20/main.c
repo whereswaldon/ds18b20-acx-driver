@@ -7,6 +7,7 @@
 
 #include <avr/io.h>
 #include <stdio.h>
+#include <string.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "acx.h"
@@ -61,20 +62,13 @@ void sensor_test() {
 	unsigned char present = ow_reset();
 	serial_open(19200, SERIAL_8N1);
 	
-	//char read;
 	present = ow_reset();
 	while (!present) {
 		x_delay(1000);
 		present = ow_reset();
 	}
 	while(1) {
-		write_bit(0);
-		/*read = read_bit();
-		if (read == 1) {
-			serial_write('1');
-		} else {
-			serial_write('0');
-		}*/
+		read_temperature();
 		x_delay(1000);
 	}
 }

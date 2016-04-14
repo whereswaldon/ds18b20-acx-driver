@@ -110,3 +110,13 @@ void serial_write(char data) {
 	/* Put data into buffer, sends the data */
 	UDR0 = data;
 }
+
+/*
+ * Write a whole string to the serial console
+ */
+void serial_write_string(char* data, int length) {
+	int i = 0;
+	for (; i < length; i ++) {
+		serial_write(data[i]);
+	}
+}
