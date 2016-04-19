@@ -59,10 +59,9 @@ void serial_test() {
  * Determine whether a sensor is connected.
  */
 void sensor_test() {
-	unsigned char present = ow_reset();
 	serial_open(19200, SERIAL_8N1);
 	
-	present = ow_reset();
+	unsigned char present = ow_reset();
 	while (!present) {
 		x_delay(1000);
 		present = ow_reset();
