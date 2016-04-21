@@ -7,6 +7,7 @@
 
 #include <avr/io.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -14,67 +15,68 @@
 #include "serial.h"
 #include "ds18b20.h"
 
-/*
- * A thread that blinks a green LED on output 11
- */
-void green() {
-	set_output(DDRB, led11);
-	int wait = 2000;
-	while (1)
-	{
-		output_hi(PORTB, led11);
-		x_delay(wait);
-		output_low(PORTB, led11);
-		x_delay(wait);
-	}
-}
+//Holds the value of the last target temperature provided
+volatile int target;
+
+//Holds the value of the last temperature measured in Celsius
+volatile int lastMeasured;
 
 /*
- * A thread that blinks a red LED on output 12
+ * Constantly measure the temperature
  */
-void red() {
-	set_output(DDRB, led12);
-	int wait = 3000;
-	while (1)
-	{
-		output_hi(PORTB, led12);
-		x_delay(wait);
-		output_low(PORTB, led12);
-		x_delay(wait);
-	}
-}
-
-void serial_test() {
-	serial_open(19200, SERIAL_8N1);
-	char c;
-	while(1) {
-		//serial_write('x');
-		//x_delay(1000);
-		c = serial_read();
-		serial_write(c);
-	}
-}
-
-/*
- * Determine whether a sensor is connected.
- */
-void sensor_test() {
-	serial_open(19200, SERIAL_8N1);
-	
+void sensor_controller() {
 	unsigned char present = ow_reset();
 	while (!present) {
 		x_delay(1000);
 		present = ow_reset();
 	}
 	while(1) {
-		read_temperature();
+		lastMeasured = read_temperature();
 		x_delay(1000);
 	}
 }
 
+/*
+ * Receive and respond to user commands
+ */
+void io_controller() {
+	serial_open(19200, SERIAL_8N1);
+	char * message;
+	message = (char *) malloc(64);
+	char input;
+	while(1) {
+		input = serial_read();
+		switch (input) {
+			case 'R': //report current box temperature	
+				sprintf(message, "%d degrees C\n\r", lastMeasured); // print temp. C
+				serial_write_string(message, strlen(message));
+
+				break;
+			case 'S': //set current target
+				break;
+			default:
+				message = "Unrecognized Command";
+				serial_write_string(message, strlen(message));
+				break;	
+		}
+	}
+	x_yield();
+}
+
+/*
+ * Act on devices to affect box temperature.
+ */
+void box_controller() {
+	x_yield();
+}
+
+/*
+ * Kick off the whole shabang
+ */
 int main(void)
 {
 	x_init();
-	//x_new(1, red, 1);
-	x_new(0, sensor_test, 1);
+	x_new(0, sensor_controller, 1);
+	x_new(1, io_controller, 1);
+	x_new(2, box_controller, 1);
 }

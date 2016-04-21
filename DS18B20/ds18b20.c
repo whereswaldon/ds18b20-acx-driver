@@ -108,7 +108,7 @@ void write_byte(char val)
 	delay_usec(119); //wait 120us
 }
 
-void read_temperature(void)
+int read_temperature(void)
 {
 	char get[10];
 	char temp_lsb,temp_msb;
@@ -124,9 +124,9 @@ void read_temperature(void)
 	for (k=0; k<9; k++) {
 		get[k] = read_byte();
 	}
-	char * message = (char *) malloc(64);
-	sprintf(message, "\n\r ScratchPAD DATA = %X%X%X%X%X%X%X%X%X\n\r",get[8],get[7],get[6],get[5],get[4],get[3],get[2],get[1],get[0]);
-	serial_write_string(message, strlen(message));
+	//char * message = (char *) malloc(64);
+	//sprintf(message, "\n\r ScratchPAD DATA = %X%X%X%X%X%X%X%X%X\n\r",get[8],get[7],get[6],get[5],get[4],get[3],get[2],get[1],get[0]);
+	//serial_write_string(message, strlen(message));
 	temp_msb = get[1]; // Sign byte + lsbit
 	temp_lsb = get[0]; // Temp data plus lsb
 	if (temp_msb <= 0x80){temp_lsb = (temp_lsb/2);} // shift to get whole degree
@@ -134,12 +134,13 @@ void read_temperature(void)
 	if (temp_msb >= 0x80) {temp_lsb = (~temp_lsb)+1;} // twos complement
 	if (temp_msb >= 0x80) {temp_lsb = (temp_lsb/2);}// shift to get whole degree
 	if (temp_msb >= 0x80) {temp_lsb = ((-1)*temp_lsb);} // add sign bit
-	sprintf(message, "\n\rTempC= %d degrees C\n\r", (int)temp_lsb ); // print temp. C
-	serial_write_string(message, strlen(message));
+	//sprintf(message, "\n\rTempC= %d degrees C\n\r", (int)temp_lsb ); // print temp. C
+	//serial_write_string(message, strlen(message));
 	temp_c = temp_lsb; // ready for conversion to Fahrenheit
 	temp_f = (((int)temp_c)* 9)/5 + 32;
 	
-	sprintf(message, "\n\rTempF= %d degrees F\n\r", (int)temp_f ); // print temp. F
-	serial_write_string(message, strlen(message));
-	free(message);
+	//sprintf(message, "\n\rTempF= %d degrees F\n\r", (int)temp_f ); // print temp. F
+	//serial_write_string(message, strlen(message));
+	//free(message);
+	return temp_c;
 }
