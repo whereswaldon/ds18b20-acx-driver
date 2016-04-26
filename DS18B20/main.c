@@ -31,7 +31,7 @@ void sensor_controller() {
 		present = ow_reset();
 	}
 	while(1) {
-		lastMeasured = read_temperature();
+		lastMeasured = ow_read_temperature();
 		x_delay(1000);
 	}
 }
@@ -76,7 +76,13 @@ void box_controller() {
 int main(void)
 {
 	x_init();
-	x_new(0, sensor_controller, 1);
-	x_new(1, io_controller, 1);
-	x_new(2, box_controller, 1);
+	//x_new(0, sensor_controller, 1);
+	//x_new(1, io_controller, 1);
+	//x_new(2, box_controller, 1);
+	serial_open(19200, SERIAL_8N1);
+	while(1) {
+		ow_print_temp();
+		x_delay(2000);//wait 2 seconds
+	}
+
 }
