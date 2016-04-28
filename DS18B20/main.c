@@ -14,6 +14,7 @@
 #include "acx.h"
 #include "serial.h"
 #include "ds18b20.h"
+#include "adc.h"
 
 //Holds the value of the last target temperature provided
 volatile int target;
@@ -76,13 +77,15 @@ void box_controller() {
 int main(void)
 {
 	x_init();
-	//x_new(0, sensor_controller, 1);
-	//x_new(1, io_controller, 1);
-	//x_new(2, box_controller, 1);
 	serial_open(19200, SERIAL_8N1);
-	while(1) {
-		ow_print_temp();
-		x_delay(2000);//wait 2 seconds
+	int value;
+	char * message;
+	message = (char *) malloc(64);
+	while(1){
+		serial_write_string("hello\n\r", strlen("hello\n\r"));
+		value = ADC_read(0, 10, 1);
+		sprintf(message,"%x\n\r", value);
+		serial_write_string(message, strlen(message));
+		x_delay(1000);
 	}
-
 }

@@ -38,6 +38,7 @@ SUBDIRS :=
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../acx.c \
+../adc.c \
 ../ds18b20.c \
 ../main.c \
 ../serial.c
@@ -54,6 +55,7 @@ ASM_SRCS +=
 OBJS +=  \
 acx.o \
 acx_asm.o \
+adc.o \
 busy_delay.o \
 ds18b20.o \
 main.o \
@@ -62,6 +64,7 @@ serial.o
 OBJS_AS_ARGS +=  \
 acx.o \
 acx_asm.o \
+adc.o \
 busy_delay.o \
 ds18b20.o \
 main.o \
@@ -70,6 +73,7 @@ serial.o
 C_DEPS +=  \
 acx.d \
 acx_asm.d \
+adc.d \
 busy_delay.d \
 ds18b20.d \
 main.d \
@@ -78,6 +82,7 @@ serial.d
 C_DEPS_AS_ARGS +=  \
 acx.d \
 acx_asm.d \
+adc.d \
 busy_delay.d \
 ds18b20.d \
 main.d \
@@ -97,6 +102,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

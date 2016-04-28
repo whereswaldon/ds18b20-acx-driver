@@ -6,6 +6,8 @@ acx.c
 
 acx_asm.s
 
+adc.c
+
 busy_delay.s
 
 ds18b20.c

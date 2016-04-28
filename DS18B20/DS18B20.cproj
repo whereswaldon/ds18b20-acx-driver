@@ -133,6 +133,12 @@
     <Compile Include="acx_asm.s">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="adc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="adc.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="busy_delay.s">
       <SubType>compile</SubType>
     </Compile>
