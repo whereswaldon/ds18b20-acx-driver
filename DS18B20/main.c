@@ -83,7 +83,7 @@ int main(void)
 	message = (char *) malloc(64);
 	while(1){
 		serial_write_string("hello\n\r", strlen("hello\n\r"));
-		value = ADC_read(0, 10, 1);
+		value = ADC_read(ADC0, 10, 1);
 		sprintf(message,"%x\n\r", value);
 		serial_write_string(message, strlen(message));
 		x_delay(1000);
