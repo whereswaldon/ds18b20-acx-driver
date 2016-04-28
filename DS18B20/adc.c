@@ -12,7 +12,7 @@ int ADC_read(byte channel, byte resolution, bool singleEnded) {
 	if (resolution != 10 || !singleEnded) {
 		return 0; //invalid options
 	}
-	DIDR0 = 0;
+	DIDR0 = 0;//Clear this data register
 	DDRF &= 0xFE;//set the pin for input
 	PORTF &= 0xFE;//set the port to zero to avoid internal pullup
 	
@@ -21,9 +21,10 @@ int ADC_read(byte channel, byte resolution, bool singleEnded) {
 	char mux40 = channel & 0x1F;
 	char mux5 = (channel & 0x20)>>2; //this shift gives it the correct position within ADCSRB
 
-	ADCSRA |= 0x5; //set the prescaler to 32
+	ADCSRA |= 0x7; //set the prescaler to 32
 	ADCSRA |= 0x1 << ADEN; //enable conversion
 	
+	ADMUX |= 0x40;
 	ADMUX |= mux40;
 	ADCSRB |= mux5;
 	low = ADCL;
