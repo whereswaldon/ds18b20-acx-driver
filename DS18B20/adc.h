@@ -27,7 +27,7 @@
 #define ADC15	0x27
 
 int ADC_read(byte channel, byte resolution, bool singleEnded);
-
-
+void ADC_disable();
+void ADC_enable();
 
 #endif /* ADC_H_ */

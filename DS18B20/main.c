@@ -76,16 +76,25 @@ void box_controller() {
  */
 int main(void)
 {
-	x_init();
-	serial_open(19200, SERIAL_8N1);
+	x_init(); //kick off kernel
+	serial_open(19200, SERIAL_8N1); //prep serial
+	ADC_enable(); //enable ADC
+	
+	//declare locals
 	int value;
-	char * message;
-	message = (char *) malloc(64);
+	char * message1;
+	char * message2;
+	float fraction;
+	message1 = (char *) malloc(64);
+	message2 = (char *) malloc(64);
+	//sample pot every 200ms and display results
 	while(1){
-		serial_write_string("hello\n\r", strlen("hello\n\r"));
 		value = ADC_read(ADC0, 10, 1);
-		sprintf(message,"%x\n\r", value);
-		serial_write_string(message, strlen(message));
-		x_delay(1000);
+		fraction = ((float) value)/1023.0 * 5;//convert to number of volts
+		dtostrf(fraction, 3, 2, message1);
+		serial_write_string(message1, strlen(message1));
+		sprintf(message2," volts (0x%x)\n\r", value);
+		serial_write_string(message2, strlen(message2));
+		x_delay(200);
 	}
 }
